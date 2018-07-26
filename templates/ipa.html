@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}IP 管理{% end %}
+
+
+{% block extracss %}
+<link href="{{ static_url('css/ipa.css') }}" rel="stylesheet">
+{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-2">
+        <ul style="margin-top: 100px">
+            <li>
+                <a href="#">上海</a>
+                <ul>
+                    <li><a href="#">172.16.0.0/24</a></li>
+                    <li>172.16.1.0/24</li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#">深圳</a>
+                <ul>
+                    <li>172.28.0.0/24</li>
+                    <li>172.28.1.0/24</li>
+                </ul>
+            </li>
+
+        </ul>
+
+    </div>
+
+    <div class="col-lg-10">
+        <div class="row">
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">IPs</a> <span class="divider">></span>
+                </li>
+                <li class="active">网络</li>
+                <lable>
+                    <a href="#add_ip" data-toggle="modal" style="margin-left: 200px;font-size: 16px">添加</a>
+                    <a href="#" style="margin-left: 50px;font-size: 16px">检查</a>
+                </lable>
+            </ul>
+        </div>
+
+        <div id="col_toggles">
+            <h2>Shown columns</h2>
+            <div id="col_toggle_buttons">
+            </div>
+        </div>
+
+        <div id="host_overview">
+            <h2>Host overview</h2>
+
+            <div id="host_overview_tbl_wrapper">
+                <table id="host_overview_tbl" class="demo display dataTable compact">
+                    <thead>
+                    <tr>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="add_ip" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">创建IP记录</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-info">
+                        <div class="panel-body modal-body1">
+                            <div id="myTabContent1" class="tab-content">
+                                <div class="tab-pane fade in active" id="default">
+                                    <br>
+
+                                    <form class="form-horizontal style-form" id="form1" method="post"
+                                          action="/services">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 col-sm-2 control-label">所属网络</label>
+
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control create-input" id="net-id"
+                                                       name="net">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 col-sm-2 control-label">所属主机</label>
+
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control create-input" name="host"
+                                                       placeholder="主机名">
+                                                <span class="help-block">未用勾选后该配置无效</span>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" name="not-in-use" value="True"> 未使用
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-2 col-sm-2 control-label">IP地址</label>
+
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control create-input"
+                                                       placeholder='ip/mask' name="envs">
+                                            </div>
+                                        </div>
+
+                                        {% raw xsrf_form_html() %}
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary">提交更改</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+
+</div>
+{% end %}
+
+{% block extrajs %}
+<script src="{{ static_url('js/jquery.dataTables.js') }}"></script>
+<script>
+
+    $(document).ready(function () {
+
+        var cols = [
+            {"title": "主机名", "id": "name", "sType": "string", "visible": true},
+            {"title": "IP", "id": "main_ip", "sType": "string", "visible": true},
+            {"title": "组名", "id": "groups", "sType": "string", "visible": true},
+            {"title": "宿主机", "id": "host", "sType": "string", "visible": false},
+            {"title": "备注", "id": "comment", "sType": "string", "visible": false},
+            {"title": "IPv4.All", "id": "all_ipv4", "sType": "string", "visible": false},
+            {"title": "系统", "id": "os", "sType": "string", "visible": false},
+            {"title": "Virt", "id": "virt", "sType": "string", "visible": false},
+            {"title": "vCPUs", "id": "vcpus", "sType": "num", "visible": false},
+            {"title": "RAM [GiB]", "id": "ram", "sType": "num", "visible": false},
+            {"title": "Mem Usage", "id": "mem_usage", "sType": "string", "visible": false},
+            {"title": "更新时间", "id": "timestamp", "sType": "string", "visible": false},
+            {"title": "测试负责人", "id": "test_person", "sType": "string", "visible": false},
+            {"title": "开发负责人", "id": "dev_person", "sType": "string", "visible": true},
+            {"title": "运维负责人", "id": "ops_person", "sType": "string", "visible": false},
+            {"title": "备注", "id": "comments", "sType": "string", "visible": false},
+            {"title": "域名", "id": "域名", "sType": "string", "visible": false},
+            {"title": "SN", "id": "sn", "sType": "string", "visible": false},
+        ]
+
+        var columnVisibility = localStorage.getItem("columnVisibility");
+        if (columnVisibility == null) {
+            columnVisibility = {}
+            for (var col in cols) {
+                columnVisibility[col["id"]] = col["visible"]
+            }
+            localStorage.setItem("columnVisibility", JSON.stringify(columnVisibility));
+        } else {
+            columnVisibility = JSON.parse(columnVisibility);
+        }
+
+        var buttons = $("#col_toggle_buttons");
+        for (var i = 0; i < cols.length; i++) {
+            var newbutton = document.createElement("a")
+            if (cols[i]["visible"]) {
+                var visible = "visible"
+            } else {
+                var visible = "invisible"
+            }
+            newbutton.setAttribute("href", "")
+            newbutton.setAttribute("class", "col-toggle col-" + visible)
+            newbutton.setAttribute("data-column", i)
+            newbutton.setAttribute("data-column-id", cols[i]["id"])
+            newbutton.innerHTML = cols[i]["title"]
+            buttons.append(newbutton)
+        }
+
+
+    })
+
+</script>
+{% end %}

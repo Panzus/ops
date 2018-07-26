@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}首页{% end %}
+
+{% block content %}
+<div class="row">
+    <br>
+    <div class="col-lg-10 col-lg-offset-1 main-chart">
+        <div class="col-md-3 col-sm-3 box0">
+            <div class="box1">
+                <span class="li_data"></span>
+                <h3><a href="/nodes">Nodes: </a></h3>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-3 box0">
+            <div class="box1">
+                <span class="li_cloud"></span>
+                <h3><a href="/stacks">Stacks: </a></h3>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-3 box0">
+            <div class="box1">
+                <span class="li_shop"></span>
+                <h3><a href="/services">Services: </a></h3>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-3 box0">
+            <div class="box1">
+                <span class="li_bubble"></span>
+                <h3>
+                    <a href="/tasks">Tasks: </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span style="font-size: 16px;color: red">Failed: </span>
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block extrajs %}
+{% end %}
